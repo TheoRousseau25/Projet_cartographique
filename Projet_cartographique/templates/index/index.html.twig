@@ -1,0 +1,102 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Notre super site !{% endblock %}
+
+{% block body %}
+
+
+    <!-- SideBar-->
+    <div class="sidenav">
+        <a href="{{ path('app_index') }}">NotreSuperSite</a>
+
+        <nav id="sidebar">
+            <p>Points d'intérêts : </p>
+        </nav>
+
+        <div id="content">
+
+            {% if app.request.get('ville') %}
+
+                <label class="container">
+                    <a class='Cinémas' href="{{ path('app_index_critere_ville', {'critere': 'Cinémas', 'ville' : app.request.get('ville')}) }}">Cinémas </a>
+                </label>
+
+                <label class="container">
+                    <a class='Hôtels' href="{{ path('app_index_critere_ville', {'critere': 'Hôtels', 'ville' : app.request.get('ville')}) }}">Hôtels </a>
+                </label>
+
+                <label class="container">
+                    <a class='Cafés' href="{{ path('app_index_critere_ville', {'critere': 'Cafés', 'ville' : app.request.get('ville')}) }}">Cafés </a>
+                </label>
+
+            {% else %}
+
+                <label class="container">
+                    <a class='Cinémas' href="{{ path('app_index_critere', {'critere': 'Cinémas'}) }}">Cinémas </a>
+                </label>
+
+                <label class="container">
+                    <a class='Hôtels' href="{{ path('app_index_critere', {'critere': 'Hôtels'}) }}">Hôtels </a>
+                </label>
+
+                <label class="container">
+                    <a class='Cafés' href="{{ path('app_index_critere', {'critere': 'Cafés' }) }}">Cafés </a>
+                </label>
+
+            {% endif %}
+        </div>
+
+
+        <hr>
+
+        <div id="content">
+            {% if app.request.get('critere') %}
+                <label class="container">
+                    <a class='Partout' href="{{ path('app_index_critere_ville', {'critere': app.request.get('critere'), 'ville' : '*'}) }}">Partout </a>
+                </label>
+
+                <label class="container">
+                    <a class='Metz' href="{{ path('app_index_critere_ville', {'critere': app.request.get('critere'), 'ville' : 'Metz'}) }}">Metz </a>
+                </label>
+
+                <label class="container">
+                    <a class='Nancy' href="{{ path('app_index_critere_ville', {'critere': app.request.get('critere'), 'ville' : 'Nancy' }) }}">Nancy </a>
+                </label>
+
+            {% endif %}
+        </div>
+
+    </div>
+
+    <!-- L'endroit ou la carte va s'afficher -->
+    <div id="map"></div>
+
+    <!-- ResearchBar-->
+    <div class="topnav">
+        <input type="text" placeholder="Search..">
+    </div>
+
+    <script src="{{ asset('/js/map.js') }}"></script>
+    <script src="{{ asset('/js/leaflet.browser.print.min.js') }}"></script>
+    <script>
+        // affichage points d'intérêts (déjà récupéré depuis le contrôleur)
+        {% if pointsInterets %}
+            {% for pointInteret in pointsInterets %}
+                var marker = L.marker([{{ pointInteret.latitude }}, {{ pointInteret.longetude }}]).addTo(map);
+                marker.bindPopup("<div>{{ pointInteret.nom }} {% if pointInteret.image %} <br> <img src='{{ pointInteret.image }}' class='marker_img' /> {% endif %} <br> {{ pointInteret.adresse }}, {{ pointInteret.ville }} <br> Latitude : {{ pointInteret.latitude }}, Longitude : {{ pointInteret.longetude }}<br><a href='{{ path('app_details_point_interet', {'id': pointInteret.id}) }}'>En savoir plus ... </a></div>").openPopup();
+            {% endfor %}
+           // map.setView([49.1193089, 6.1757156, 14], 14);
+        navigator.geolocation.getCurrentPosition(handleLocation, handleLocationError, locationOptions);
+        {% endif %}
+
+        // affichage bouton imprilmante
+        var tisk = L.control.browserPrint({position: 'topright'}).addTo(map);
+
+        var homebutton = L.easyButton('fa-home fa-lg', function () {
+            //map.setView([49.1193089, 6.1757156, 14], 14);
+            navigator.geolocation.getCurrentPosition(handleLocation, handleLocationError, locationOptions);
+        }, 'home position', {position: 'topright'});
+        homebutton.addTo(map);
+    </script>
+
+{% endblock %}

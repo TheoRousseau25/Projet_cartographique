@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ pointInteret.nom }}{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-2">
+            <div class="sidenav">
+                <a href="{{ path('app_index') }}">NotreSuperSite</a>
+
+                <nav id="sidebar">
+                    <a href="{{ path('app_index') }}">Retour</a>
+                </nav>
+            </div>
+        </div>
+        <div class="col-10">
+            <div>
+                <h1>{{ pointInteret.nom }}</h1>
+                <br>
+                {% if pointInteret.image %}
+                    <img src='{{ pointInteret.image }}' style="width:600px; height:350px;" />
+                {% endif %}
+                <br>
+                <p>Adresse : {{ pointInteret.adresse }}, {{ pointInteret.ville}} </p>
+                <br>
+                <p>Latitude : {{ pointInteret.latitude }} </p>
+                <p>Longitude : {{ pointInteret.longetude }} </p>
+                <a href="https://b3d5dc46-817d-448d-ba5a-880247dee3fc.mock.pstmn.io/http://localhost:8000/api/point_interets/1">Informations sous JSON</a>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
